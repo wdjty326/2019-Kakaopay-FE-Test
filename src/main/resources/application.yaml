@@ -1,0 +1,12 @@
+spring:
+  http:
+    encoding:
+      charset:  UTF-8
+  mvc:
+    view:
+      prefix: /jsp/
+      suffix: .jsp
+server:
+  port: 3000
+  tomcat:
+    uri-encoding: UTF-8
