@@ -25,12 +25,35 @@
 ### 개발 환경
 - NPM
 - openJDK 11
+- Visual Studio Code
 - Spring-Boot
-- Websocket
 
-#### 개발서버 실행
+### 프론트 개발
+- ReactJS
+- Bootstrap 4
+
+### 백엔드 개발
+- java
+- spring-boot
+- websocket(+stomp)
+
+#### 프로젝트 환경 구성
 ``` bash
+# opneJDK 11 및 Visual Studio Code 다운 및 설치
+openJDK 11 Link : http://jdk.java.net/11/
+Visual Studio Code Link : https://code.visualstudio.com/Download
 
+# visual studio code 실행 후 플러그인 다운
+1. Spring Boot Extension Pack
+2. Lombok Annotations Support for VS Code
+3. Java Extension Pack
+
+# Preferences >> Setting 에서 설정검색에 jdk 검색 후, setting.json 파일에 java.home 추가
+"java.home": "/Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home" # mac
+```
+
+#### 프로젝트 빌드 & 실행
+``` bash
 # package.json 에 정의된 모듈 다운
 $ npm i
 
@@ -42,16 +65,23 @@ $ npm i
 ```
 
 ### API 정의
-| API | 정의 | 파라미터 |
-|---|---|---|
-| GET<br>/api/chatroom/list | 채팅 리스트를 가져옵니다. | N/A |
-| GET<br>/api/connect | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} |
-| GET<br>/api/push | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>text={String}<br>type={String 'image' or 'text'} |
+| API | 정의 | 파라미터 | 응답타입 | 응답값
+|---|---|---|---|---|
+| GET<br>/api/chatroom | 채팅 리스트를 가져옵니다. | N/A | JSON | [{'item.id': 'test',<br> 'item.name': 'test}]
+| GET<br>/app/connect/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} | N/A | N/A
+| GET<br>/api/push/{chatroomId} | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>message={String}<br>type={String 'image' or 'text'} | N/A | N/A
 
-### 처리 프로세스
+### 처리 프로세스 정리
 - 입력받은 사용자ID 정보 클라이언트에서 저장
 - API를 통해 가져오는 채팅방 리스트를 클라이언트에게 표출
 - 선택한 채팅방 ID값을 클라이언트에게 저장
 - 채팅방 ID와 사용자 ID로 웹소켓 연결
 - 연결 성공시, 선택한 채팅방에 있는 사용자들에게 메세지 PUSH
 - 메세지 전송 API로 채팅처리
+
+### 작업 리스트 정리
+- [x] 웹소켓 백엔드 개발
+- [] 백엔드 테스트 코드 작성 및 테스트
+- [] 화면 기능 개발
+- [] 화면 테스트 코드 작성 및 테스트
+- [] 화면 UI 작성 
