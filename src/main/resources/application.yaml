@@ -10,18 +10,19 @@ server:
   port: 3000
   tomcat:
     uri-encoding: UTF-8
+    
 ### 채팅방 정보 ###
 chatroom: 
-  info:
-    - 
-      id: test1
-      name: 테스트방1
-    -
-      id: test2
-      name: 테스트방2
-    -
-      id: test3
-      name: 테스트방3
+  list:
+    - item:
+        id: test1
+        name: 테스트방1
+    - item:
+        id: test2
+        name: 테스트방2
+    - item:
+        id: test3
+        name: 테스트방3
 
 ### 웹소켓 정보 ###
 websocket:

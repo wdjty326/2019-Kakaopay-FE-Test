@@ -1,11 +1,10 @@
 package com.kakao.work.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.kakao.work.message.SocketMessage;
-import com.kakao.work.yaml.ChatRoomConfigurationYami;
+import com.kakao.work.yaml.ChatRoomConfigurationYaml;
 import com.kakao.work.yaml.WebSocketConfigurationYaml;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class SocketController {
   private SimpMessagingTemplate Template;
 
   @Autowired
-  private ChatRoomConfigurationYami chatroomConfiguration;
+  private ChatRoomConfigurationYaml chatroomConfiguration;
 
   @Autowired
   private WebSocketConfigurationYaml websocketConfiguration;
@@ -41,8 +40,8 @@ public class SocketController {
   }
   
   @GetMapping("/api/chatroom")
-  public @ResponseBody List<Object> chatroom() {
-    return chatroomConfiguration.getInfo();
+  public @ResponseBody List<Map<String, String>> chatroom() {
+    return chatroomConfiguration.getList();
   }
 
   /**
