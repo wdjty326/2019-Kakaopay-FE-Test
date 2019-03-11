@@ -1,13 +1,14 @@
-package com.kakao.work.socket;
+package com.kakao.work.web;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kakao.work.socket.message.SocketMessage;
+import com.kakao.work.message.SocketMessage;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,7 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class SocketController {
-
+  /**
+   * index.jsp 호출
+   */
+  @GetMapping("/index")
+  public String getMethodName(Model model) {
+      return "index";
+  }
+  
   @GetMapping("/api/chatroom")
   public @ResponseBody List<String> chatroom() {
     List<String> list = new ArrayList<String>();

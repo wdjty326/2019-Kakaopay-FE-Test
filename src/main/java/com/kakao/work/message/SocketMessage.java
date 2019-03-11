@@ -1,4 +1,4 @@
-package com.kakao.work.socket.message;
+package com.kakao.work.message;
 
 /**
  * websocket 통신 메세지 형식

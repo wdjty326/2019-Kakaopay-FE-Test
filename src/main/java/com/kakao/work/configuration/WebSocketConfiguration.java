@@ -1,4 +1,4 @@
-package com.kakao.work.socket;
+package com.kakao.work.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
