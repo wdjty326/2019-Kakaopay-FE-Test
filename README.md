@@ -19,12 +19,6 @@
 - 단위 테스트 필수, UI 테스트(Storybook, Selenium)와 통합 테스트는 선택
 - README.md 파일에 문제해결 전략 및 프로젝트 빌드, 실행 방법 명시
 
-### 예시 및 설명
-- 위 언급되지 않은 내용에 대해서는 자유롭게 작성할 수 있다.
-
-![kakaotalk](./chat1.png)
-![kakaotalk](./chat2.png)
-![kakaotalk](./chat3.png)
 
 ## Getting Start
 
@@ -51,10 +45,8 @@ $ npm i
 | API | 정의 | 파라미터 |
 |---|---|---|
 | GET<br>/api/chatroom/list | 채팅 리스트를 가져옵니다. | N/A |
-| GET<br>/api/connect/{id}/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} |
+| GET<br>/api/connect | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} |
 | GET<br>/api/push | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>text={String}<br>type={String 'image' or 'text'} |
-
-
 
 ### 처리 프로세스
 - 입력받은 사용자ID 정보 클라이언트에서 저장
