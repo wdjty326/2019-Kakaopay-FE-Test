@@ -49,7 +49,17 @@ $ npm i
 
 ### API 정의
 | API | 정의 | 파라미터 |
-|---|:---:|---:|
-| GET /api/chatroom/list | 채팅 리스트를 가져옵니다. | N/A |
-| GET /api/connect/{id}/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long} chatroomId={Long} |
-| GET /api/push | 채팅을 전송합니다. | id={Long}, chatroomId={Long}, text={String} |
+|---|---|---|
+| GET<br>/api/chatroom/list | 채팅 리스트를 가져옵니다. | N/A |
+| GET<br>/api/connect/{id}/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} |
+| GET<br>/api/push | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>text={String}<br>type={String 'image' or 'text'} |
+
+
+
+### 처리 프로세스
+- 입력받은 사용자ID 정보 클라이언트에서 저장
+- API를 통해 가져오는 채팅방 리스트를 클라이언트에게 표출
+- 선택한 채팅방 ID값을 클라이언트에게 저장
+- 채팅방 ID와 사용자 ID로 웹소켓 연결
+- 연결 성공시, 선택한 채팅방에 있는 사용자들에게 메세지 PUSH
+- 메세지 전송 API로 채팅처리
