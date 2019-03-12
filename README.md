@@ -65,11 +65,12 @@ $ npm i
 ```
 
 ### API 정의
-| API | 정의 | 파라미터 | 응답타입 | 응답값
-|---|---|---|---|---|
-| GET<br>/api/chatroom | 채팅 리스트를 가져옵니다. | N/A | JSON | [{'item.id': 'test',<br> 'item.name': 'test}]
-| GET<br>/app/connect/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} | N/A | N/A
-| GET<br>/api/push/{chatroomId} | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>message={String}<br>type={String 'image' or 'text'} | N/A | N/A
+| API | 정의 | 파라미터 | 응답타입 | 응답값 | 기타
+|---|---|---|---|---|---|
+| GET<br>/api/chatroom | 채팅 리스트를 가져옵니다. | N/A | JSON | [{'item.id': 'test',<br> 'item.name': 'test}] | 
+| GET<br>/app/connect/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} | N/A | N/A | WebSocket API
+| GET<br>/app/push/{chatroomId} | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>message={String}<br>type={String 'image' or 'text'} | N/A | N/A | WebSocket API
+
 
 ### 처리 프로세스 정리
 - 입력받은 사용자ID 정보 클라이언트에서 저장
@@ -79,9 +80,9 @@ $ npm i
 - 연결 성공시, 선택한 채팅방에 있는 사용자들에게 메세지 PUSH
 - 메세지 전송 API로 채팅처리
 
-### 작업 리스트 정리
+#### 작업 리스트 정리
 - [x] 웹소켓 백엔드 개발
-- [] 백엔드 테스트 코드 작성 및 테스트
-- [] 화면 기능 개발
-- [] 화면 테스트 코드 작성 및 테스트
-- [] 화면 UI 작성 
+- [x] 백엔드 테스트 코드 작성 및 단위 테스트 실행
+- [ ] 화면 기능 개발
+- [ ] 화면 테스트 코드 작성 및 단위 테스트 실행
+- [ ] 화면 UI 작성 
