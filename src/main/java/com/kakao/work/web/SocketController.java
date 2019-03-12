@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 public class SocketController {
   // 로거
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
-  private SimpMessagingTemplate Template;
-
+  private SimpMessagingTemplate messagingTemplate;
+  
   @Autowired
   private ChatRoomConfigurationYaml chatroomConfiguration;
 
@@ -56,12 +56,11 @@ public class SocketController {
    * 최초 사용자 접속 메세지 전달
    */
   @MessageMapping("/connect/{chatroomId}")
-  // @SendTo("/topic/connect")
   public void connect(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
-    // Thread.sleep(1000); // 딜레이 부여
+    Thread.sleep(1000); // 딜레이 부여
     String brokerString = getBrokerString("connect", chatroomId);
-    Template.convertAndSend(brokerString, message);
     logger.info("@connect@brokerString@" + brokerString + "@message@" + message);
+    messagingTemplate.convertAndSend(brokerString, message);
   }
 
   /**
@@ -69,10 +68,10 @@ public class SocketController {
    */
   @MessageMapping("/push/{chatroomId}")
   public void push(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
-    // Thread.sleep(1000); // 딜레이 부여
+    Thread.sleep(1000); // 딜레이 부여
     String brokerString = getBrokerString("push", chatroomId);
-    Template.convertAndSend(brokerString, message);
     logger.info("@push@brokerString@" + brokerString + "@message@" + message);
+    messagingTemplate.convertAndSend(brokerString, message);
   }
 
   /**

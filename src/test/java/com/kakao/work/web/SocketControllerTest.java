@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties.Template;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -31,6 +30,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.messaging.simp.stomp.StompSession.Subscription;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -40,8 +40,6 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -68,7 +66,6 @@ public class SocketControllerTest {
   private MockMvc mockMvc;
 
   private CompletableFuture<SocketMessage> completableFuture;
-
   // 테스트 실행전 
   @Before
   public void setup() {
@@ -84,7 +81,7 @@ public class SocketControllerTest {
       + port 
       + websocketConfiguration.getEndpoint().get("sockjs");
 
-      completableFuture = new CompletableFuture<SocketMessage>();
+    this.completableFuture = new CompletableFuture<SocketMessage>();
   }
 
   // 컨트롤러 로드 테스트
@@ -117,10 +114,17 @@ public class SocketControllerTest {
     StompSession stompSession = createStompSession();
 
     // test1 > chatroomId 값
-    stompSession.subscribe(prefix.get("broker") + "/connect/test1", new CreateStompFrameHandler());
-    // stompSession.send(prefix.get("destination") + "/connect/test1", new SocketMessage("test"));
-
-    SocketMessage socketMessage = completableFuture.get(1, SECONDS);
+    Subscription subscription = stompSession.subscribe(prefix.get("broker") + "connect/test1", new CreateStompFrameHandler());
+    // StompHeaders stompHeaders = subscription.getSubscriptionHeaders();
+    // System.out.println("stompHeaders.getDestination() : " + stompHeaders.getDestination());
+    // System.out.println("stompHeaders.getLogin() : " + stompHeaders.getLogin());
+    // System.out.println("stompHeaders.getSubscription() : " + stompHeaders.getSubscription());
+    // System.out.println("stompHeaders.getAck() : " + stompHeaders.getAck());
+    // System.out.println("stompHeaders.getSession() : " + stompHeaders.getSession());
+    
+    stompSession.send(prefix.get("destination") + "/connect/test1", new SocketMessage("test"));
+    
+    SocketMessage socketMessage = completableFuture.get(3, SECONDS);
     assertNotNull(socketMessage);
   }
 
@@ -131,10 +135,10 @@ public class SocketControllerTest {
     StompSession stompSession = createStompSession();
     
     // test1 > chatroomId 값
-    stompSession.subscribe(prefix.get("broker") + "/push/test1", new CreateStompFrameHandler());
+    stompSession.subscribe(prefix.get("broker") + "push/test1", new CreateStompFrameHandler());
     stompSession.send(prefix.get("destination") + "/push/test1", new SocketMessage("test", "text", "TestMessage"));
 
-    SocketMessage socketMessage = completableFuture.get(5, SECONDS);
+    SocketMessage socketMessage = completableFuture.get(3, SECONDS);
     assertNotNull(socketMessage);
   }
 
@@ -167,6 +171,7 @@ public class SocketControllerTest {
     // 
     @Override
     public void handleFrame(StompHeaders stompHeaders, Object o) {
+      System.out.println("Msg " + o.toString());
       completableFuture.complete((SocketMessage) o);
     }
   }

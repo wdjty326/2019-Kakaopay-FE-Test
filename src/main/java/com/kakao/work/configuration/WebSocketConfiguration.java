@@ -38,6 +38,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
     Map<String, String> endpoint = yaml.getEndpoint();
-    registry.addEndpoint(endpoint.get("sockjs")).withSockJS();
+    registry.addEndpoint(endpoint.get("sockjs"))
+      .addInterceptors(new WebSocketHandshakeIntercept())
+      .withSockJS();
   }
 }
