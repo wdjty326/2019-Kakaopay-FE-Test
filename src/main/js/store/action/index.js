@@ -9,7 +9,7 @@ import * as api from '../api';
  * 사용자 ID를 설정
  * @param {사용자ID} userId 
  */
-export const setUserID = (userId = '') => ({
+export const setUserID = (userId = null) => ({
   type: SET_USERID,
   userId,
 });
@@ -18,7 +18,7 @@ export const setUserID = (userId = '') => ({
  * 
  * @param {채팅방ID} chatroomId
  */
-export const setChatroomID = (chatroomId = '') => ({
+export const setChatroomID = (chatroomId = null) => ({
   type: SET_CHATROOMID,
   chatroomId,
 });

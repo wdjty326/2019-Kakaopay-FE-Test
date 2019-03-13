@@ -9,6 +9,10 @@ import lombok.Data;
  */
 @Data
 public class SocketMessage {
+  private String id;  // 사용자 ID값
+  private String type;  // message 형식 (image or text)
+  private String message; // message 텍스트
+
   public SocketMessage() {}    
 
   public SocketMessage(String id) {
@@ -20,11 +24,4 @@ public class SocketMessage {
     this.type = type;
     this.message = message;
   }
-
-  @JsonProperty("id")
-  private String id;  // 사용자 ID값
-  @JsonProperty("type")
-  private String type;  // message 형식 (image or text)
-  @JsonProperty("message")
-  private String message; // message 텍스트
 }

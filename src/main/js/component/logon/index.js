@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as action from '../../store/action';
 
 const mapDispatchToProps = (dispatch) => ({
-  setUserID: (userId = '') => dispatch(action.setUserID(userId)),
+  setUserID: (userId = null) => dispatch(action.setUserID(userId)),
 });
 /**
  * logon 페이지
@@ -30,11 +30,13 @@ class Logon extends Component {
 
   onSumbitLogon = (event) => {
     event.preventDefault();
-
     const { userId } = this.state;
-    const { setUserID } = this.props;
-
-    setUserID(userId);
+    
+    // userid 자리수 체크
+    if (userId.trim().length > 0) {
+      const { setUserID } = this.props;
+      setUserID(userId);
+    }
   }
 
   render() {
@@ -43,7 +45,7 @@ class Logon extends Component {
       <div>
         <form onSubmit={this.onSumbitLogon}>
           <input type="text" onChange={this.onChangeUserId} value={userId} />
-          <button type="submit">저장</button>
+          <button type="submit">로그인</button>
         </form>
       </div>
     );

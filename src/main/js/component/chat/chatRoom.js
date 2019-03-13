@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { connect } from 'react-redux';
@@ -24,52 +24,118 @@ class ChatRoom extends Component {
     const stomp = Stomp.over(sockJS);
     
     this.state = {
-      stomp,
-      isConnection: false,
-    };
-    
+      stomp,  // stomp 브로커
+      cacheList: [],  // 캐쉬
+      message: '',  // 메세지
+    }; 
   }
 
   componentDidMount() {
     const { stomp } = this.state;
+    const {
+      userId,
+      chatroomId,
+    } = this.props;
     
-    stomp.connect('test', 'test', (frame) => {
-      this.setState({
-        isConnection: true,
-        frame,
+    stomp.connect({}, () => {
+      const connectBroker = `/topic/connect/${chatroomId}`;
+      const pushBroker = `/topic/push/${chatroomId}`;
+      
+      stomp.subscribe(connectBroker, (message) => {
+        const { body } = message;
+        const jsonData = JSON.parse(body);
+        const { id } = jsonData;
+        const cache = {
+          jsonData,
+          ...{
+            type: 'text',
+            message: `${id} 님께서 입장하셨습니다.`,
+          }
+        };
+        
+        this.updateCache(cache);
       });
+
+      stomp.subscribe(pushBroker, (message) => {
+        const { body } = message;
+        const cache = JSON.parse(body);
+        this.updateCache(cache);
+      });
+
+      const connectDestination = `/app/connect/${chatroomId}`;
+      const message = {
+        id: userId,
+      };
+      stomp.send(connectDestination, {}, JSON.stringify(message));
     }, (error) => {
       console.log(error);
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  updateCache = (cache) => {
+    const { cacheList } = this.state;
+    const updateCacheList = cacheList.map((i) => i);
+
+    updateCacheList.push(cache);
+    this.setState({
+      cacheList: updateCacheList,
+    });
+  }
+
+  onChangeMessage = (event) => {
+    const { target } = event;
+    this.setState({
+      message: target.value,
+    });
+  }
+
+  onSubmitMessage = (event) => {
+    event.preventDefault();
+    const {
+      message,
+    } = this.state;
+
+    this.sendMessage('text', message);
+  };
+
+  /**
+   * 
+   */
+  sendMessage = (type, message) => {
     const {
       userId,
       chatroomId,
-    } = nextProps;
-    const {
-      stomp,
-      isConnection,
-    } = this.state;
+    } = this.props;
+    const { stomp } = this.state;
 
-    if (userId !== '' && chatroomId !== '' && isConnection) {
-      const broker = `/topic/connect/${chatroomId}`;
-      const destination = `/app/connect/${chatroomId}`;
-      const message = {
-        id: userId,
-      };
-      stomp.subscribe(broker, (message) => {
-        console.log(message);
-      });
-
-      stomp.send(destination, JSON.stringify(message));
-    }
+    const pushDestination = `/app/push/${chatroomId}`;
+    stomp.send(pushDestination, {}, JSON.stringify({
+      id: userId,
+      type,
+      message,
+    })); 
   }
-  
+
   render() {
+    const { message, cacheList } = this.state;
+
     return (
-      <div />
+      <Fragment>
+        <div>
+          {
+            cacheList.map((cache, i) => (
+              <div key={i}>
+                <span>{cache.id}</span>
+                <span>{cache.message}</span>
+              </div>
+            ))
+          }
+        </div>
+        <form onSubmit={this.onSubmitMessage}>
+          <input type="text" value={message} onChange={this.onChangeMessage} />
+          <button type="submit">전송</button>
+        </form>
+      </Fragment>
     );
   }
 }

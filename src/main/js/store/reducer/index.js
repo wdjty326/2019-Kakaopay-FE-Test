@@ -5,8 +5,8 @@ import {
 } from '../type';
 
 const initialState = {
-  userId: '', // 사용자ID
-  chatroomId: '', // 채팅방ID
+  userId: null, // 사용자ID
+  chatroomId: null, // 채팅방ID
   chatroomList: [], // 채팅방 리스트
 };
 
