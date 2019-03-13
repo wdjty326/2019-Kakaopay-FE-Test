@@ -1,6 +1,7 @@
 import {
   SET_USERID,
   SET_CHATROOMID,
+  SET_CHATROOM_LIST,
 } from '../type';
 
 const initialState = {
@@ -32,11 +33,16 @@ export default (state = initialState, action) => {
           chatroomId,
         },
       };
-    default:
-      console.log(action);
+    case SET_CHATROOM_LIST:
       return {
         ...state,
-        ...action,
+        ...{
+          chatroomList,
+        },
+      };
+    default:
+      return {
+        ...state,
       };
   }
 }

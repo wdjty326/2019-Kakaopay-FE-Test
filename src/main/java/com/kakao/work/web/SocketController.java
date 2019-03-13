@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,7 +52,7 @@ public class SocketController {
    */
   @MessageMapping("/connect/{chatroomId}")
   @SendTo("/topic/connect/{chatroomId}")
-  public SocketMessage connect(@DestinationVariable String chatroomId, SocketMessage message) throws Exception {
+  public SocketMessage connect(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
     Thread.sleep(1000); // 딜레이 부여
     logger.info("@connect@message@" + message);
     return message;
@@ -62,7 +63,7 @@ public class SocketController {
    */
   @MessageMapping("/push/{chatroomId}")
   @SendTo("/topic/push/{chatroomId}")
-  public SocketMessage push(@DestinationVariable String chatroomId, SocketMessage message) throws Exception {
+  public SocketMessage push(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
     Thread.sleep(1000); // 딜레이 부여
     logger.info("@push@message@" + message);
     return message;

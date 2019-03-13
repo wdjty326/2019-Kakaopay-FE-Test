@@ -1,7 +1,9 @@
 import {
   SET_USERID,
   SET_CHATROOMID,
+  SET_CHATROOM_LIST,
 } from '../type';
+import * as api from '../api';
 
 /**
  * 사용자 ID를 설정
@@ -20,3 +22,17 @@ export const setChatroomID = (chatroomId = '') => ({
   type: SET_CHATROOMID,
   chatroomId,
 });
+
+/**
+ * 채팅방 리스트 설정
+ */
+export const setChatroomList = () => dispatch => {
+  const callback = (data) => {
+    dispatch({
+      type: SET_CHATROOM_LIST,
+      chatroomList: data,
+    });
+  };
+
+  api.getChatroomList(callback);
+};
