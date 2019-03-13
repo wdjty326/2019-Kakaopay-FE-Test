@@ -27,6 +27,7 @@ class ChatRoom extends Component {
       stomp,  // stomp 브로커
       cacheList: [],  // 캐쉬
       message: '',  // 메세지
+      fileSource: null, // 파일 소스
     }; 
   }
 
@@ -48,7 +49,6 @@ class ChatRoom extends Component {
         const cache = {
           jsonData,
           ...{
-            type: 'text',
             message: `${id} 님께서 입장하셨습니다.`,
           }
         };
@@ -72,6 +72,10 @@ class ChatRoom extends Component {
     });
   }
 
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
   updateCache = (cache) => {
     const { cacheList } = this.state;
     const updateCacheList = cacheList.map((i) => i);
@@ -89,35 +93,90 @@ class ChatRoom extends Component {
     });
   }
 
-  onSubmitMessage = (event) => {
-    event.preventDefault();
-    const {
-      message,
-    } = this.state;
+  onChangeFileSource = (event) => {
+    const { target } = event;
 
-    this.sendMessage('text', message);
-  };
+    this.getBase64(target.files[0]).then(
+      (fileSource) => {
+        console.log(fileSource);
+        this.setState({
+          fileSource,
+        });
+      }
+    ).catch(error => {
+      console.log(error);
+    });
+  }
 
+  getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        // 이미지 사이즈를 줄이기 위해 캠버스로 다시 그림
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+
+          const MAX_WIDTH = 600;
+          const MAX_HEIGHT = 480;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataurl = canvas.toDataURL("image/jpeg");
+          resolve(dataurl);
+        };
+      };
+      reader.onerror = error => reject(error);
+    });
+  }
+  
   /**
    * 
    */
-  sendMessage = (type, message) => {
+  sendMessage = (event) => {
+    event.preventDefault();
     const {
       userId,
       chatroomId,
     } = this.props;
-    const { stomp } = this.state;
+    const {
+      stomp,
+      message,
+      fileSource,
+    } = this.state;
 
     const pushDestination = `/app/push/${chatroomId}`;
     stomp.send(pushDestination, {}, JSON.stringify({
       id: userId,
-      type,
+      fileSource,
       message,
     })); 
   }
 
   render() {
-    const { message, cacheList } = this.state;
+    const {
+      message,
+      cacheList,
+      fileSource,
+    } = this.state;
 
     return (
       <Fragment>
@@ -126,14 +185,30 @@ class ChatRoom extends Component {
             cacheList.map((cache, i) => (
               <div key={i}>
                 <span>{cache.id}</span>
-                <span>{cache.message}</span>
+                {
+                  (cache.fileSource) ? (
+                    <div>
+                      <img src={cache.fileSource} />
+                    </div>
+                  ) : null
+                }
+                <p>{cache.message}</p>
               </div>
             ))
           }
         </div>
-        <form onSubmit={this.onSubmitMessage}>
-          <input type="text" value={message} onChange={this.onChangeMessage} />
-          <button type="submit">전송</button>
+        {
+          (fileSource) ? (
+            <div>
+              <span>이미지 미리보기</span>
+              <img src={fileSource} />
+            </div>
+          ) : null
+        }
+        <form onSubmit={this.sendMessage}>
+          <input type='file' accept='image/*' onChange={this.onChangeFileSource}  />
+          <input type='text' value={message} onChange={this.onChangeMessage} />
+          <button type='submit'>전송</button>
         </form>
       </Fragment>
     );

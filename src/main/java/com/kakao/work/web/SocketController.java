@@ -57,6 +57,7 @@ public class SocketController {
   public SocketMessage connect(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
     Thread.sleep(1000); // 딜레이 부여
     logger.info("@connect@message@" + message);
+    message.setType("connect");
     return message;
   }
 
@@ -68,6 +69,7 @@ public class SocketController {
   public SocketMessage push(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
     Thread.sleep(1000); // 딜레이 부여
     logger.info("@push@message@" + message);
+    message.setType("push");
     return message;
   }
 

@@ -44,8 +44,8 @@ class Logon extends Component {
     return (
       <div>
         <form onSubmit={this.onSumbitLogon}>
-          <input type="text" onChange={this.onChangeUserId} value={userId} />
-          <button type="submit">로그인</button>
+          <input type='text' onChange={this.onChangeUserId} value={userId} />
+          <button type='submit'>로그인</button>
         </form>
       </div>
     );

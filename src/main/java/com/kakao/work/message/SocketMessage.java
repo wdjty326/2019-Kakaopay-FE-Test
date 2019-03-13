@@ -12,6 +12,7 @@ public class SocketMessage {
   private String id;  // 사용자 ID값
   private String type;  // message 형식 (image or text)
   private String message; // message 텍스트
+  private String fileSource; // 이미지 파일
 
   public SocketMessage() {}    
 
