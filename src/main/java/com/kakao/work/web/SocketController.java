@@ -10,16 +10,13 @@ import com.kakao.work.yaml.WebSocketConfigurationYaml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * 메세지 제어 소스
@@ -29,9 +26,6 @@ public class SocketController {
   // 로거
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired
-  private SimpMessagingTemplate messagingTemplate;
-  
   @Autowired
   private ChatRoomConfigurationYaml chatroomConfiguration;
 
@@ -56,32 +50,21 @@ public class SocketController {
    * 최초 사용자 접속 메세지 전달
    */
   @MessageMapping("/connect/{chatroomId}")
-  public void connect(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
+  @SendTo("/topic/connect/{chatroomId}")
+  public SocketMessage connect(@DestinationVariable String chatroomId, SocketMessage message) throws Exception {
     Thread.sleep(1000); // 딜레이 부여
-    String brokerString = getBrokerString("connect", chatroomId);
-    logger.info("@connect@brokerString@" + brokerString + "@message@" + message);
-    messagingTemplate.convertAndSend(brokerString, message);
+    logger.info("@connect@message@" + message);
+    return message;
   }
 
   /**
    * 메세지 전송
    */
   @MessageMapping("/push/{chatroomId}")
-  public void push(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
+  @SendTo("/topic/push/{chatroomId}")
+  public SocketMessage push(@DestinationVariable String chatroomId, SocketMessage message) throws Exception {
     Thread.sleep(1000); // 딜레이 부여
-    String brokerString = getBrokerString("push", chatroomId);
-    logger.info("@push@brokerString@" + brokerString + "@message@" + message);
-    messagingTemplate.convertAndSend(brokerString, message);
+    logger.info("@push@message@" + message);
+    return message;
   }
-
-  /**
-   * charid :: {text}
-   */
-  private String getBrokerString(String type, String chatroomId) {
-    Map<String, String> prefix = websocketConfiguration.getPrefix();
-    type = "/" + type + "/";
-    // /topic/chat/{chatroomId}
-    return prefix.get("broker").concat(type).concat(chatroomId);
-  }
-
 }

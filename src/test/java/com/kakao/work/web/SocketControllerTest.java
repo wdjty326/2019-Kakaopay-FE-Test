@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import com.kakao.work.message.SocketMessage;
 import com.kakao.work.yaml.WebSocketConfigurationYaml;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,12 +26,12 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.messaging.simp.stomp.StompSession.Subscription;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,8 +52,6 @@ public class SocketControllerTest {
   // 컨트롤러
   @Autowired
   private SocketController controller;
-  @Autowired
-  private SimpMessagingTemplate Template;
   
   @Autowired
   private WebSocketConfigurationYaml websocketConfiguration;
@@ -66,9 +65,11 @@ public class SocketControllerTest {
   private MockMvc mockMvc;
 
   private CompletableFuture<SocketMessage> completableFuture;
+  private StompSession stompSession;
+
   // 테스트 실행전 
   @Before
-  public void setup() {
+  public void setup() throws Exception {
     InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
     viewResolver.setPrefix("/jsp/");
     viewResolver.setSuffix(".jsp");
@@ -82,12 +83,12 @@ public class SocketControllerTest {
       + websocketConfiguration.getEndpoint().get("sockjs");
 
     this.completableFuture = new CompletableFuture<SocketMessage>();
+    this.stompSession = createStompSession();
   }
 
   // 컨트롤러 로드 테스트
   @Test
   public void contexLoads() throws Exception {
-    assertNotNull(Template);
     assertNotNull(controller);
   }
 
@@ -111,10 +112,9 @@ public class SocketControllerTest {
   @Test
   public void connectWebsocket() throws Exception {
     Map<String, String> prefix = websocketConfiguration.getPrefix();
-    StompSession stompSession = createStompSession();
-
+  
     // test1 > chatroomId 값
-    Subscription subscription = stompSession.subscribe(prefix.get("broker") + "connect/test1", new CreateStompFrameHandler());
+    Subscription subscription = this.stompSession.subscribe(prefix.get("broker") + "/connect/test1", new CreateStompFrameHandler());
     // StompHeaders stompHeaders = subscription.getSubscriptionHeaders();
     // System.out.println("stompHeaders.getDestination() : " + stompHeaders.getDestination());
     // System.out.println("stompHeaders.getLogin() : " + stompHeaders.getLogin());
@@ -122,7 +122,7 @@ public class SocketControllerTest {
     // System.out.println("stompHeaders.getAck() : " + stompHeaders.getAck());
     // System.out.println("stompHeaders.getSession() : " + stompHeaders.getSession());
     
-    stompSession.send(prefix.get("destination") + "/connect/test1", new SocketMessage("test"));
+    this.stompSession.send(prefix.get("destination") + "/connect/test1", new SocketMessage("test"));
     
     SocketMessage socketMessage = completableFuture.get(3, SECONDS);
     assertNotNull(socketMessage);
@@ -132,14 +132,18 @@ public class SocketControllerTest {
   @Test
   public void pushWebsocketMessage() throws Exception {
     Map<String, String> prefix = websocketConfiguration.getPrefix();
-    StompSession stompSession = createStompSession();
     
     // test1 > chatroomId 값
-    stompSession.subscribe(prefix.get("broker") + "push/test1", new CreateStompFrameHandler());
-    stompSession.send(prefix.get("destination") + "/push/test1", new SocketMessage("test", "text", "TestMessage"));
+    this.stompSession.subscribe(prefix.get("broker") + "/push/test1", new CreateStompFrameHandler());
+    this.stompSession.send(prefix.get("destination") + "/push/test1", new SocketMessage("test", "text", "TestMessage"));
 
     SocketMessage socketMessage = completableFuture.get(3, SECONDS);
     assertNotNull(socketMessage);
+  }
+
+  @After
+  public void unmount() throws Exception {
+    this.stompSession.disconnect();
   }
 
   // websocket stomp 세션 생성
@@ -148,8 +152,7 @@ public class SocketControllerTest {
     stompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
     // 연결 유지 시간 (초)
-    return stompClient.connect(this.URL, new StompSessionHandlerAdapter() {
-    }).get(5, SECONDS);
+    return stompClient.connect(this.URL, new CreateStompSessionHandler()).get(5, SECONDS);
   }
 
   // 연결 할 웹소켓 클라이언트 리스트 생성
@@ -159,6 +162,28 @@ public class SocketControllerTest {
     return transports;
   }
 
+  private class CreateStompSessionHandler extends StompSessionHandlerAdapter {
+    @Override
+    public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+      System.out.println("afterConnected");
+      super.afterConnected(session, connectedHeaders);
+    }
+
+    @Override
+    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload,
+        Throwable exception) {
+      System.out.println("handleException");
+      exception.printStackTrace();
+      super.handleException(session, command, headers, payload, exception);
+    }
+
+    @Override
+    public void handleTransportError(StompSession session, Throwable exception) {
+      System.out.println("handleTransportError");
+      exception.printStackTrace();
+      super.handleTransportError(session, exception);
+    }
+  }
 
   private class CreateStompFrameHandler implements StompFrameHandler {
 
