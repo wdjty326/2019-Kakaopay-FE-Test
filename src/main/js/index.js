@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-class Root extends Component {
+class Index extends Component {
   render() {
     return <div>메인페이지</div>;
   }
 }
 
-ReactDOM.render(<Root />, document.getElementById('root'));
+ReactDOM.render(<Index />, document.getElementById('root'));

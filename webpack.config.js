@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
   context: path.resolve(__dirname, 'src/main/js'),
   entry: {
-    kakaoApp: './root.js',
+    kakaoApp: './index.js',
   },
   devtool: 'sourcemaps',
   cache: true,
