@@ -4,10 +4,11 @@
 <html>
 <head>
     <title>Kakao App</title>
+    <Link rel="stylesheet" type="text/css" href="/css/app.bundle.css" />
 </head>
  
 <body>
     <div id="root"></div>
-    <script src="/js/react/kakaoApp.bundle.js"></script>
+    <script src="/js/app.bundle.js"></script>
 </body>
 </html>

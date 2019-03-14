@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Logon from './logon';
 import ChatMain from './chat';
 import { connect } from 'react-redux';
@@ -16,11 +16,11 @@ class App extends Component {
     const { userId } = this.props;
 
     return (
-      <Fragment>
+      <div>
         {
           (userId) ? <ChatMain /> : <Logon />
         }
-      </Fragment>
+      </div>
     );
   }
 }

@@ -55,7 +55,7 @@ public class SocketController {
   @MessageMapping("/connect/{chatroomId}")
   @SendTo("/topic/connect/{chatroomId}")
   public SocketMessage connect(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
-    Thread.sleep(1000); // 딜레이 부여
+    Thread.sleep(200); // 딜레이 부여
     logger.info("@connect@message@" + message);
     message.setType("connect");
     return message;
@@ -67,7 +67,7 @@ public class SocketController {
   @MessageMapping("/push/{chatroomId}")
   @SendTo("/topic/push/{chatroomId}")
   public SocketMessage push(@DestinationVariable String chatroomId, @Payload SocketMessage message) throws Exception {
-    Thread.sleep(1000); // 딜레이 부여
+    Thread.sleep(200); // 딜레이 부여
     logger.info("@push@message@" + message);
     message.setType("push");
     return message;

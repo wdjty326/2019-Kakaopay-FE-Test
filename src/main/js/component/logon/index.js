@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import * as action from '../../store/action';
 
 const mapDispatchToProps = (dispatch) => ({
@@ -42,10 +44,17 @@ class Logon extends Component {
   render() {
     const { userId } = this.state;
     return (
-      <div>
+      <div className='logon'>
+        <div>
+          <FontAwesomeIcon icon='comment' />
+        </div>
         <form onSubmit={this.onSumbitLogon}>
-          <input type='text' onChange={this.onChangeUserId} value={userId} />
-          <button type='submit'>로그인</button>
+          <div className='form-group'>
+            <input className='form-control' placeholder='사용자ID' type='text' onChange={this.onChangeUserId} value={userId} />
+          </div>
+          <div className='form-group'>
+            <button className='btn btn-block btn-third btn-lg' type='submit'>로그인</button>
+          </div>
         </form>
       </div>
     );

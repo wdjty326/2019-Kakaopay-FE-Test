@@ -15,14 +15,26 @@ server:
 chatroom: 
   list:
     - item:
-        id: test1
-        name: 테스트방1
+        icon: react
+        id: react
+        name: 리액트
     - item:
-        id: test2
-        name: 테스트방2
+        icon: vuejs
+        id: vuejs
+        name: 뷰
     - item:
-        id: test3
-        name: 테스트방3
+        icon: angular
+        id: angular
+        name: 앵귤러
+    - item:
+        icon: nodejs
+        id: nodejs
+        name: NodeJs
+    - item:
+        icon: ember
+        id: ember
+        name: 엠바
+
 
 ### 웹소켓 정보 ###
 websocket:

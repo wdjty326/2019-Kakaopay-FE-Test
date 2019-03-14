@@ -1,0 +1,83 @@
+html, body, #root { width: 100vw; height: 100vh; margin: 0; }
+#root {
+  width: 100vw;
+  height: 100vh;
+  padding: .8em;
+  align-items: center;
+  justify-content: center;
+  display: -webkit-flex;
+  -webkit-align-item: center;
+  -webkit-justify-content: center;
+  background-color: #fef01b;
+}
+
+#root > div {
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+  max-height: 600px;
+}
+
+.btn-third {
+  background-color: #fef01b;
+  border: 2px solid #fff;
+}
+
+.logon > div {
+  justify-content: center;
+  display: -webkit-flex;
+  -webkit-justify-content: center;
+}
+
+.logon > div:nth-child(1) > svg {
+  width: 600px;
+  height: 480px;
+}
+
+.logon > form {
+  position: relative;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 480px;
+}
+.chat { width: 100%; height: 100%; border-radius: .2em; background-color: #FFF; }
+.chat > div:nth-child(2) {
+  margin: .3em
+}
+.chat .body {
+  width: calc( 100% - 0.6em );
+  height: calc( 100% - 56px - .6em );
+}
+
+.chat .body .cacheList {
+  height: calc( 100% - 63px );
+}
+
+/* nav 커스텀 */
+.navbar-nav {
+  flex-direction: row;
+}
+
+.navbar-nav .nav-item {
+  margin: 0 .5em;
+}
+.cacheList {
+  background-color: #9bbbd4;
+}
+
+.connect {
+  text-align: center;
+  background-color: #99A3AD;
+}
+
+.arrow_box.then {
+	position: relative;
+	background: #ffffff;
+}
+
+/* 자기메세지 */
+.arrow_box.me {
+	position: relative;
+	background: #fef01b;
+}

@@ -47,7 +47,7 @@ class ChatRoom extends Component {
         const jsonData = JSON.parse(body);
         const { id } = jsonData;
         const cache = {
-          jsonData,
+          ...jsonData,
           ...{
             message: `${id} 님께서 입장하셨습니다.`,
           }
@@ -83,6 +83,7 @@ class ChatRoom extends Component {
     updateCacheList.push(cache);
     this.setState({
       cacheList: updateCacheList,
+      message: '',
     });
   }
 
@@ -113,30 +114,17 @@ class ChatRoom extends Component {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (e) => {
-        // 이미지 사이즈를 줄이기 위해 캠버스로 다시 그림
         const img = document.createElement("img");
         img.src = e.target.result;
         img.onload = () => {
+          /**
+           * jpeg 변환
+           */
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0);
-
-          const MAX_WIDTH = 600;
-          const MAX_HEIGHT = 480;
           let width = img.width;
           let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
@@ -148,6 +136,10 @@ class ChatRoom extends Component {
     });
   }
   
+  componentWillUnmount() {
+    const { stomp } = this.state;
+    stomp.disconnect();
+  }
   /**
    * 
    */
@@ -173,6 +165,9 @@ class ChatRoom extends Component {
 
   render() {
     const {
+      userId,
+    } = this.props;
+    const {
       message,
       cacheList,
       fileSource,
@@ -180,21 +175,34 @@ class ChatRoom extends Component {
 
     return (
       <Fragment>
-        <div>
+        <div class='cacheList'>
           {
-            cacheList.map((cache, i) => (
-              <div key={i}>
-                <span>{cache.id}</span>
-                {
-                  (cache.fileSource) ? (
-                    <div>
-                      <img src={cache.fileSource} />
-                    </div>
-                  ) : null
-                }
-                <p>{cache.message}</p>
-              </div>
-            ))
+            cacheList.map((cache, i) => {
+              console.log(cache);
+              return (cache.type === 'connect') ? (
+                <div key={i} className='connect'>
+                  <p>{cache.message}</p>
+                </div>
+              ) : (
+                <div
+                  key={i}
+                >
+                  <span>{cache.id}</span>
+                  {
+                    (cache.fileSource) ? (
+                      <div>
+                        <img src={cache.fileSource} />
+                      </div>
+                    ) : null
+                  }
+                  <div
+                    className={(cache.id === userId) ? 'arrow_box me' : 'arrow_box then'}
+                  >
+                    {cache.message}
+                  </div>
+                </div>
+              )
+            })
           }
         </div>
         {
@@ -206,9 +214,13 @@ class ChatRoom extends Component {
           ) : null
         }
         <form onSubmit={this.sendMessage}>
-          <input type='file' accept='image/*' onChange={this.onChangeFileSource}  />
-          <input type='text' value={message} onChange={this.onChangeMessage} />
-          <button type='submit'>전송</button>
+          <input type='file' accept='image/*' className='form-control-file' onChange={this.onChangeFileSource}  />
+          <div className='input-group'>
+            <input type='text' className='form-control' value={message} onChange={this.onChangeMessage} />
+            <div className='input-group-append'>
+              <button type='submit' className='btn'>전송</button>
+            </div>
+          </div>
         </form>
       </Fragment>
     );

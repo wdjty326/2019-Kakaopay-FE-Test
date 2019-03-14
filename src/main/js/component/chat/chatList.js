@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import * as action from '../../store/action';
 
 const mapStateToProps = (state) => {
@@ -22,6 +24,10 @@ const mapDispatchToProps = dispatch => ({
 class ChatList extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      mouseover: '',
+    };
     props.setChatroomList();
   }
 
@@ -30,21 +36,34 @@ class ChatList extends Component {
     setChatroomID(chatroomId);
   }
 
+  onMouseEventChatRoom = (chatroomId = '') => {
+    this.setState({
+      mouseover: chatroomId,
+    })
+  };
+
   render() {
+    const { mouseover } = this.state;
     const { chatroomList } = this.props;
     return (
-      <ul>
-        {
-          chatroomList.map((chatroom) => (
-            <li
-              key={chatroom['item.id']}
-              onClick={() => this.onSelectedChatRoom(chatroom['item.id'])}
-            >
-              {chatroom['item.name']}
-            </li>
-          ))
-        }
-      </ul>
+      <div>
+        <ul className='list-group'>
+          {
+            chatroomList.map((chatroom) => (
+              <li
+                className={`list-group-item ${(mouseover === chatroom['item.id']) ? 'active' : ''}`}
+                key={chatroom['item.id']}
+                onClick={() => this.onSelectedChatRoom(chatroom['item.id'])}
+                onMouseOver={() => this.onMouseEventChatRoom(chatroom['item.id'])}
+                onMouseOut={() => this.onMouseEventChatRoom()}
+              >
+                <FontAwesomeIcon icon={chatroom['item.icon']} />
+                {chatroom['item.name']}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     );
   }
 }
