@@ -92,8 +92,6 @@
 .then > .arrow_box {
 	position: relative;
   background: #ffffff;
-  border-radius: 2px;
-  padding-left: 5px;
 }
 
 .then > .arrow_box:after {
@@ -120,8 +118,6 @@
 }
 
 .me > .arrow_box {
-  border-radius: 2px;
-  padding-left: 5px;
   position: relative;
   background: #fef01b;
 }
@@ -139,6 +135,14 @@
 	border-left-color: #fef01b;
 	border-width: 5px;
 	margin-top: -5px;
+}
+
+.arrow_box {
+  border-radius: 2px;
+  padding: 5px;
+}
+.arrow_box > img {
+  width:100%;
 }
 
 .preview-image {

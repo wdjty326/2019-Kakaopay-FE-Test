@@ -1,7 +1,5 @@
 package com.kakao.work.message;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 /**
@@ -10,7 +8,7 @@ import lombok.Data;
 @Data
 public class SocketMessage {
   private String id;  // 사용자 ID값
-  private String type;  // message 형식 (image or text)
+  private String type;  // message 형식 (connect or push)
   private String message; // message 텍스트
   private String fileSource; // 이미지 파일
 

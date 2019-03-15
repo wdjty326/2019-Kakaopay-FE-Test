@@ -68,8 +68,9 @@ $ npm i
 | API | 정의 | 파라미터 | 응답타입 | 응답값 | 기타
 |---|---|---|---|---|---|
 | GET<br>/api/chatroom | 채팅 리스트를 가져옵니다. | N/A | JSON | [{'item.id': 'test',<br> 'item.name': 'test}] | 
-| GET<br>/app/connect/{chatroomId} | 선택한 채팅방에 접속합니다. | id={Long}<br>chatroomId={Long} | N/A | N/A | WebSocket API
-| GET<br>/app/push/{chatroomId} | 채팅을 전송합니다. | id={Long}<br>chatroomId={Long}<br>message={String}<br>type={String 'image' or 'text'} | N/A | N/A | WebSocket API
+| POST<br>/api/uploadFile | 파일을 업로드 합니다. | file={file} | multipert/form-data | {'fileName': 'test',<br> 'fileDownloadUri': 'http://locahost:3000/image/test.jpg',<br>,'size': 123123<br>, 'fileType': 'image/png'} | 
+| GET<br>/app/connect/{chatroomId} | 선택한 채팅방에 접속합니다. | id={String}<br>chatroomId={String} | JSON String | {'id': 'test',<br>'type': 'connect', <br>'message': null,<br>'fileSource': null} | WebSocket API
+| GET<br>/app/push/{chatroomId} | 채팅을 전송합니다. | id={String}<br>chatroomId={String}<br>filesource={String URL}<br>message={String} | JSON String | {'id': 'test',<br>'type': 'push', <br>'message': 'test',<br>'fileSource': 'http://localhost:3000/image/test.jpg'} | WebSocket API
 
 
 ### 처리 프로세스 정리

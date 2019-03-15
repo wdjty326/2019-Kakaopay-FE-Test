@@ -36,3 +36,10 @@ export const setChatroomList = () => dispatch => {
 
   api.getChatroomList(callback);
 };
+
+/**
+ * 파일 업로드
+ */
+export const uploadImageFile = (file, callback = () => {}) => (
+  api.uploadImageFile(file, callback)
+);

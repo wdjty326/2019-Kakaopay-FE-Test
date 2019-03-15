@@ -1,11 +1,11 @@
-package com.kakao.work.web;
+package com.kakao.work.web.socket;
 
 import java.util.List;
 import java.util.Map;
 
 import com.kakao.work.message.SocketMessage;
-import com.kakao.work.yaml.ChatRoomConfigurationYaml;
-import com.kakao.work.yaml.WebSocketConfigurationYaml;
+import com.kakao.work.properties.ChatRoomConfigurationProperties;
+import com.kakao.work.properties.WebSocketConfigurationProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +32,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class SocketController {
   // 로거
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final StorageService storageService;
   @Autowired
-  private ChatRoomConfigurationYaml chatroomConfiguration;
+  private ChatRoomConfigurationProperties chatroomConfigurationProperties;
 
   @Autowired
-  private WebSocketConfigurationYaml websocketConfiguration;
+  private WebSocketConfigurationProperties websocketConfigurationProperties;
   /**
    * index.jsp 호출
    */
@@ -48,23 +47,9 @@ public class SocketController {
   
   @GetMapping("/api/chatroom")
   public @ResponseBody List<Map<String, String>> chatroom() {
-    List<Map<String, String>> list = chatroomConfiguration.getList();
+    List<Map<String, String>> list = chatroomConfigurationProperties.getList();
     this.logger.info("@/api/chatroom@response@" + list);
     return list;
-  }
-
-  /**
-   * 파일 업로드
-   */
-  @PostMapping("/api/fileUpload")
-  public String handleFileUpload(@RequestParam("file") MultipartFile file,
-          RedirectAttributes redirectAttributes) {
-
-    storageService.store(file);
-    redirectAttributes.addFlashAttribute("message",
-          "You successfully uploaded " + file.getOriginalFilename() + "!");
-
-    return "redirect:/";
   }
 
   /**
@@ -90,11 +75,4 @@ public class SocketController {
     message.setType("push");
     return message;
   }
-
-  @MessageExceptionHandler
-	@SendToUser("/topic/error")
-	public String handleException(Throwable exception) {
-    logger.error(exception.getMessage(), exception);
-		return exception.getMessage();
-	}
 }

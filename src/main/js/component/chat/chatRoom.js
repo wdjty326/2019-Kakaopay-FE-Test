@@ -2,6 +2,7 @@ import React, { Component, Fragment, createRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { connect } from 'react-redux';
+import { uploadImageFile } from '../../store/action';
 
 
 /**
@@ -31,6 +32,7 @@ class ChatRoom extends Component {
     }; 
 
     this.cacheListRef = createRef();
+    this.fileSourceRef = createRef();
   }
 
   componentDidMount() {
@@ -88,7 +90,11 @@ class ChatRoom extends Component {
     this.setState({
       cacheList: updateCacheList,
       message: '',
+      fileSource: null,
     });
+
+    const fileSourceRef = this.fileSourceRef.current;
+    fileSourceRef.value = null;
   }
 
   onChangeMessage = (event) => {
@@ -100,45 +106,47 @@ class ChatRoom extends Component {
 
   onChangeFileSource = (event) => {
     const { target } = event;
-
-    this.getBase64(target.files[0]).then(
-      (fileSource) => {
-        console.log(fileSource);
-        this.setState({
-          fileSource,
-        });
-      }
-    ).catch(error => {
-      console.log(error);
+    this.setState({
+      fileSource: target.files[0],
     });
+    // this.getBase64(target.files[0]).then(
+    //   (fileSource) => {
+    //     console.log(fileSource);
+    //     this.setState({
+    //       fileSource,
+    //     });
+    //   }
+    // ).catch(error => {
+    //   console.log(error);
+    // });
   }
 
-  getBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.onload = () => {
-          /**
-           * jpeg 변환
-           */
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-          let width = img.width;
-          let height = img.height;
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-          const dataurl = canvas.toDataURL("image/jpeg");
-          resolve(dataurl);
-        };
-      };
-      reader.onerror = error => reject(error);
-    });
-  }
+  // getBase64 = (file) => {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = (e) => {
+  //       const img = document.createElement("img");
+  //       img.src = e.target.result;
+  //       img.onload = () => {
+  //         /**
+  //          * jpeg 변환
+  //          */
+  //         const canvas = document.createElement('canvas');
+  //         const ctx = canvas.getContext("2d");
+  //         ctx.drawImage(img, 0, 0);
+  //         let width = img.width;
+  //         let height = img.height;
+  //         canvas.width = width;
+  //         canvas.height = height;
+  //         ctx.drawImage(img, 0, 0, width, height);
+  //         const dataurl = canvas.toDataURL("image/jpeg");
+  //         resolve(dataurl);
+  //       };
+  //     };
+  //     reader.onerror = error => reject(error);
+  //   });
+  // }
   
   componentWillUnmount() {
     const { stomp } = this.state;
@@ -158,14 +166,27 @@ class ChatRoom extends Component {
       message,
       fileSource,
     } = this.state;
-
-    if ( fileSource || message !== '' ) {
+    const send = (fileSource = null) => {
       const pushDestination = `/app/push/${chatroomId}`;
       stomp.send(pushDestination, {}, JSON.stringify({
         id: userId,
-        fileSource,
         message,
+        fileSource,
       }));
+    };
+
+    if ( fileSource || message !== '' ) {
+      if (fileSource) {
+        uploadImageFile(fileSource, (response) => {
+          const { fileDownloadUri } = response;
+
+          if (fileDownloadUri) {
+            send(fileDownloadUri);
+          }
+        });
+      } else {
+        send();
+      }
     }
   }
 
@@ -197,16 +218,14 @@ class ChatRoom extends Component {
                   className={(cache.id === userId) ? 'chatbox me' : 'chatbox then'}
                 >
                   <span>{cache.id}</span>
-                  {
-                    (cache.fileSource) ? (
-                      <div>
-                        <img src={cache.fileSource} />
-                      </div>
-                    ) : null
-                  }
                   <div
                     className='arrow_box'
                   >
+                    {
+                      (cache.fileSource) ? (
+                        <img src={cache.fileSource} />
+                      ) : null
+                    }
                     {cache.message}
                   </div>
                 </div>
@@ -218,11 +237,11 @@ class ChatRoom extends Component {
           {
             (fileSource) ? (
               <div className='preview-image'>
-                <img src={fileSource} />
+                <img src={URL.createObjectURL(fileSource)} />
               </div>
             ) : null
           }
-          <input type='file' accept='image/*' className='form-control-file' onChange={this.onChangeFileSource}  />
+          <input type='file' ref={this.fileSourceRef} accept='image/*' className='form-control-file' onChange={this.onChangeFileSource} />
           <div className='input-group'>
             <input type='text' className='form-control' value={message} onChange={this.onChangeMessage} />
             <div className='input-group-append'>

@@ -1,4 +1,10 @@
 spring:
+#  servlet:
+#    multipart:
+#      enabled: true
+#      file-size-threshold: 2KB
+#      max-file-size: 200MB
+#      max-request-size: 215MB
   http:
     encoding:
       charset:  UTF-8
@@ -10,7 +16,11 @@ server:
   port: 3000
   tomcat:
     uri-encoding: UTF-8
-    
+
+
+file:
+  upload-dir: ./src/main/webapp/image
+
 ### 채팅방 정보 ###
 chatroom: 
   list:

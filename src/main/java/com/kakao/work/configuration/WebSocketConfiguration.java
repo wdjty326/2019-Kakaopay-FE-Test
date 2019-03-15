@@ -2,7 +2,7 @@ package com.kakao.work.configuration;
 
 import java.util.Map;
 
-import com.kakao.work.yaml.WebSocketConfigurationYaml;
+import com.kakao.work.properties.WebSocketConfigurationProperties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +21,13 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
   @Autowired
-  private WebSocketConfigurationYaml yaml;
+  private WebSocketConfigurationProperties properties;
   /**
    * 브로커 접근 URL 설정
    */
   @Override
   public void configureMessageBroker(MessageBrokerRegistry config) {
-    Map<String, String> prefix = yaml.getPrefix();
+    Map<String, String> prefix = properties.getPrefix();
     config.enableSimpleBroker(prefix.get("broker"));
     config.setApplicationDestinationPrefixes(prefix.get("destination"));
   }
@@ -38,7 +38,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
    */
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    Map<String, String> endpoint = yaml.getEndpoint();
+    Map<String, String> endpoint = properties.getEndpoint();
     registry.addEndpoint(endpoint.get("sockjs"))
       .withSockJS();
   }
