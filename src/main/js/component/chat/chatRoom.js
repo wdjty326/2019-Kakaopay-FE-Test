@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, createRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { connect } from 'react-redux';
@@ -29,6 +29,8 @@ class ChatRoom extends Component {
       message: '',  // 메세지
       fileSource: null, // 파일 소스
     }; 
+
+    this.cacheListRef = createRef();
   }
 
   componentDidMount() {
@@ -73,7 +75,9 @@ class ChatRoom extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state);
+    // 스크롤 하단이동
+    const cacheListElement = this.cacheListRef.current;
+    cacheListElement.scrollTop = cacheListElement.scrollHeight;
   }
 
   updateCache = (cache) => {
@@ -155,12 +159,14 @@ class ChatRoom extends Component {
       fileSource,
     } = this.state;
 
-    const pushDestination = `/app/push/${chatroomId}`;
-    stomp.send(pushDestination, {}, JSON.stringify({
-      id: userId,
-      fileSource,
-      message,
-    })); 
+    if ( fileSource || message !== '' ) {
+      const pushDestination = `/app/push/${chatroomId}`;
+      stomp.send(pushDestination, {}, JSON.stringify({
+        id: userId,
+        fileSource,
+        message,
+      }));
+    }
   }
 
   render() {
@@ -175,10 +181,12 @@ class ChatRoom extends Component {
 
     return (
       <Fragment>
-        <div class='cacheList'>
+        <div
+          className='cacheList'
+          ref={this.cacheListRef}
+        >
           {
             cacheList.map((cache, i) => {
-              console.log(cache);
               return (cache.type === 'connect') ? (
                 <div key={i} className='connect'>
                   <p>{cache.message}</p>
@@ -186,6 +194,7 @@ class ChatRoom extends Component {
               ) : (
                 <div
                   key={i}
+                  className={(cache.id === userId) ? 'chatbox me' : 'chatbox then'}
                 >
                   <span>{cache.id}</span>
                   {
@@ -196,7 +205,7 @@ class ChatRoom extends Component {
                     ) : null
                   }
                   <div
-                    className={(cache.id === userId) ? 'arrow_box me' : 'arrow_box then'}
+                    className='arrow_box'
                   >
                     {cache.message}
                   </div>
@@ -205,20 +214,19 @@ class ChatRoom extends Component {
             })
           }
         </div>
-        {
-          (fileSource) ? (
-            <div>
-              <span>이미지 미리보기</span>
-              <img src={fileSource} />
-            </div>
-          ) : null
-        }
         <form onSubmit={this.sendMessage}>
+          {
+            (fileSource) ? (
+              <div className='preview-image'>
+                <img src={fileSource} />
+              </div>
+            ) : null
+          }
           <input type='file' accept='image/*' className='form-control-file' onChange={this.onChangeFileSource}  />
           <div className='input-group'>
             <input type='text' className='form-control' value={message} onChange={this.onChangeMessage} />
             <div className='input-group-append'>
-              <button type='submit' className='btn'>전송</button>
+              <button type='submit' className='btn btn-secondary'>전송</button>
             </div>
           </div>
         </form>

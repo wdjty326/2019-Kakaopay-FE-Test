@@ -48,6 +48,7 @@ html, body, #root { width: 100vw; height: 100vh; margin: 0; }
 .chat .body {
   width: calc( 100% - 0.6em );
   height: calc( 100% - 56px - .6em );
+  position: relative;
 }
 
 .chat .body .cacheList {
@@ -64,20 +65,85 @@ html, body, #root { width: 100vw; height: 100vh; margin: 0; }
 }
 .cacheList {
   background-color: #9bbbd4;
+  overflow-y: auto;
 }
 
 .connect {
   text-align: center;
   background-color: #99A3AD;
+  margin-bottom: 5px;
 }
 
-.arrow_box.then {
+.chatbox {
+  width: calc( 50% - 30px );
+  margin-bottom: 5px;
+}
+
+.then {
+  margin-right: auto;
+  margin-left: 15px;
+}
+
+.then > .arrow_box {
 	position: relative;
-	background: #ffffff;
+  background: #ffffff;
+  border-radius: 2px;
+  padding-left: 5px;
+}
+
+.then > .arrow_box:after {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 255, 255, 0);
+	border-right-color: #ffffff;
+	border-width: 5px;
+  margin-top: -5px;
 }
 
 /* 자기메세지 */
-.arrow_box.me {
-	position: relative;
-	background: #fef01b;
+
+
+.me {
+  margin-left: auto;
+  margin-right: 15px;
+}
+
+.me > .arrow_box {
+  border-radius: 2px;
+  padding-left: 5px;
+  position: relative;
+  background: #fef01b;
+}
+
+.me > .arrow_box:after {
+	left: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(254, 240, 27, 0);
+	border-left-color: #fef01b;
+	border-width: 5px;
+	margin-top: -5px;
+}
+
+.preview-image {
+  position: absolute;
+  display: inline-block;
+  right: 0;
+  bottom: 63px;
+}
+
+.preview-image > img {
+  max-width: 120px;
+  max-height: 120px;
 }

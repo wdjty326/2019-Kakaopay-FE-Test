@@ -19,7 +19,11 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 메세지 제어 소스
@@ -28,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SocketController {
   // 로거
   private final Logger logger = LoggerFactory.getLogger(getClass());
-
+  private final StorageService storageService;
   @Autowired
   private ChatRoomConfigurationYaml chatroomConfiguration;
 
@@ -47,6 +51,20 @@ public class SocketController {
     List<Map<String, String>> list = chatroomConfiguration.getList();
     this.logger.info("@/api/chatroom@response@" + list);
     return list;
+  }
+
+  /**
+   * 파일 업로드
+   */
+  @PostMapping("/api/fileUpload")
+  public String handleFileUpload(@RequestParam("file") MultipartFile file,
+          RedirectAttributes redirectAttributes) {
+
+    storageService.store(file);
+    redirectAttributes.addFlashAttribute("message",
+          "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+    return "redirect:/";
   }
 
   /**
