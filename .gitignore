@@ -2,6 +2,9 @@ HELP.md
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
+### 이미지 업로드 ###
+/src/main/webapp/image
+
 ### Node.js ###
 /node_modules
 
