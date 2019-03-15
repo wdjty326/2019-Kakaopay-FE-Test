@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -59,7 +60,7 @@ public class SocketControllerTest {
   // 로컬 포트 호출
   @LocalServerPort
   private int port;
-  // ws 포트 용 url
+  // // ws 포트 용 url
   private String URL;
 
   private MockMvc mockMvc;
@@ -142,7 +143,7 @@ public class SocketControllerTest {
   }
 
   @After
-  public void unmount() throws Exception {
+  public void destroy() throws Exception {
     this.stompSession.disconnect();
   }
 
