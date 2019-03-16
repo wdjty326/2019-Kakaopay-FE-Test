@@ -2,6 +2,7 @@ import React, { Component, Fragment, createRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { uploadImageFile } from '../../store/action';
 
 
@@ -19,7 +20,7 @@ const mapStateToProps = (state) => {
 class ChatRoom extends Component {
   constructor(props) {
     super(props);
-    
+
     // sockjs 객체
     const sockJS = new SockJS('/sockjs');
     const stomp = Stomp.over(sockJS);
@@ -42,38 +43,46 @@ class ChatRoom extends Component {
       chatroomId,
     } = this.props;
     
-    stomp.connect({}, () => {
-      const connectBroker = `/topic/connect/${chatroomId}`;
-      const pushBroker = `/topic/push/${chatroomId}`;
-      
-      stomp.subscribe(connectBroker, (message) => {
-        const { body } = message;
-        const jsonData = JSON.parse(body);
-        const { id } = jsonData;
-        const cache = {
-          ...jsonData,
-          ...{
-            message: `${id} 님께서 입장하셨습니다.`,
-          }
-        };
+    // 에러처리
+    if (userId && chatroomId) {
+      stomp.connect({}, () => {
+        const connectBroker = `/topic/connect/${chatroomId}`;
+        const pushBroker = `/topic/push/${chatroomId}`;
         
-        this.updateCache(cache);
-      });
+        stomp.subscribe(connectBroker, (message) => {
+          const { body } = message;
+          const jsonData = JSON.parse(body);
+          const { id } = jsonData;
+          const cache = {
+            ...jsonData,
+            ...{
+              message: `${id} 님께서 입장하셨습니다.`,
+            }
+          };
+          
+          this.updateCache(cache);
+        });
 
-      stomp.subscribe(pushBroker, (message) => {
-        const { body } = message;
-        const cache = JSON.parse(body);
-        this.updateCache(cache);
-      });
+        stomp.subscribe(pushBroker, (message) => {
+          const { body } = message;
+          const cache = JSON.parse(body);
+          this.updateCache(cache);
+        });
 
-      const connectDestination = `/app/connect/${chatroomId}`;
-      const message = {
-        id: userId,
-      };
-      stomp.send(connectDestination, {}, JSON.stringify(message));
-    }, (error) => {
-      console.log(error);
-    });
+        const connectDestination = `/app/connect/${chatroomId}`;
+        const message = {
+          id: userId,
+        };
+        stomp.send(connectDestination, {}, JSON.stringify(message));
+      }, (error) => {
+        console.log(error);
+      });
+    } else {
+      this.updateCache({
+        type: 'connect',
+        message: '서버와의 연결이 끊어졌습니다. 로그아웃 후 다시 접속해주세요.',
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -109,44 +118,7 @@ class ChatRoom extends Component {
     this.setState({
       fileSource: target.files[0],
     });
-    // this.getBase64(target.files[0]).then(
-    //   (fileSource) => {
-    //     console.log(fileSource);
-    //     this.setState({
-    //       fileSource,
-    //     });
-    //   }
-    // ).catch(error => {
-    //   console.log(error);
-    // });
   }
-
-  // getBase64 = (file) => {
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = (e) => {
-  //       const img = document.createElement("img");
-  //       img.src = e.target.result;
-  //       img.onload = () => {
-  //         /**
-  //          * jpeg 변환
-  //          */
-  //         const canvas = document.createElement('canvas');
-  //         const ctx = canvas.getContext("2d");
-  //         ctx.drawImage(img, 0, 0);
-  //         let width = img.width;
-  //         let height = img.height;
-  //         canvas.width = width;
-  //         canvas.height = height;
-  //         ctx.drawImage(img, 0, 0, width, height);
-  //         const dataurl = canvas.toDataURL("image/jpeg");
-  //         resolve(dataurl);
-  //       };
-  //     };
-  //     reader.onerror = error => reject(error);
-  //   });
-  // }
   
   componentWillUnmount() {
     const { stomp } = this.state;
@@ -175,7 +147,8 @@ class ChatRoom extends Component {
       }));
     };
 
-    if ( fileSource || message !== '' ) {
+    // 에러처리
+    if ((userId && chatroomId) && (fileSource || message !== '')) {
       if (fileSource) {
         uploadImageFile(fileSource, (response) => {
           const { fileDownloadUri } = response;
@@ -253,5 +226,15 @@ class ChatRoom extends Component {
     );
   }
 }
+
+ChatRoom.propTypes = {
+  userId: PropTypes.string,
+  chatroomId: PropTypes.string,
+};
+
+ChatRoom.defaultProps = {
+  userId: 'test',
+  chatroomId: 'test',
+};
 
 export default connect(mapStateToProps)(ChatRoom);

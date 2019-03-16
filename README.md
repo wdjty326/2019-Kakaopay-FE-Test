@@ -52,16 +52,28 @@ Visual Studio Code Link : https://code.visualstudio.com/Download
 "java.home": "/Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home" # mac
 ```
 
-#### 프로젝트 빌드 & 실행
+#### 프로젝트 빌드 & 테스트 & 실행
 ``` bash
 # package.json 에 정의된 모듈 다운
 $ npm i
 
 # webpack 으로 js 파일 빌드
 ./node_modules/.bin/webpack -d
+or
+npm run build
+
+# webpack 으로 ui 테스트 코드 실행
+npm run test:unit
+
+# spring-boot 테스트 코드 실행
+./mvnw test
+or
+npm run test:server
 
 # spring-boot 실행
 ./mvnw spring-boot:run
+or
+npm run start
 ```
 
 ### API 정의
@@ -84,11 +96,11 @@ $ npm i
 #### 작업 리스트 정리
 - [x] 초기 README.md 작성
 - [x] 개발 환경 구축 및 프로젝트 구조 설계
-- [ ] 개발 및 테스트
+- [x] 개발 및 테스트
  - [x] 웹소켓 백엔드 개발
  - [x] 백엔드 테스트 코드 작성 및 단위 테스트 실행 
  - [x] 화면 기능 개발
  - [x] 화면 UI 작성
- - [ ] 화면 테스트 코드 작성 및 단위 테스트 실행
+ - [x] 화면 테스트 코드 작성 및 단위 테스트 실행
 - [ ] 전체 기능 리스트 점검
 - [ ] README.md 추가 수정

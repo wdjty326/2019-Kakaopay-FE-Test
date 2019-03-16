@@ -8,6 +8,7 @@
     "build": "webpack -d --config ./webpack.config.js",
     "build:watch": "npm run build -- --watch",
     "test:unit": "mocha -r @babel/register -r ./test/helpers.js -r ./test/dom.js 'src/**/*.spec.js'",
+    "test:server": "./mvnw test",
     "test:unit:watch": "npm run test:unit -- --watch",
     "test:snapshot": "jest --config ./test/jest.config.json",
     "test:snapshot:watch": "npm run test:snapshot -- --watch"
@@ -60,11 +61,12 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.10.0",
     "ignore-styles": "^5.0.1",
     "jsdom": "^14.0.0",
     "mocha": "^6.0.2",
     "nodemon": "^1.18.10",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.10.0"
+    "redux-mock-store": "^1.5.3"
   }
 }
