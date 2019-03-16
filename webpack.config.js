@@ -3,14 +3,15 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, 'src/main/js'),
-  entry: {
-    app: './index.js',
-  },
+  entry: [
+    '@babel/polyfill',
+    './index.js'
+  ],
   devtool: 'sourcemaps',
   cache: true,
   output: {
     path: __dirname,
-    filename: './src/main/webapp/js/[name].bundle.js'
+    filename: './src/main/webapp/js/app.bundle.js'
   },
   mode: 'none',
   module: {
@@ -23,7 +24,10 @@ module.exports = {
           options: {
             presets: [ '@babel/preset-env', '@babel/preset-react' ],
             plugins: [
-              "@babel/plugin-proposal-class-properties",
+              '@babel/plugin-syntax-dynamic-import',
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-export-namespace-from',
+              '@babel/plugin-proposal-throw-expressions'
             ]
           }
         }
@@ -33,7 +37,13 @@ module.exports = {
           fallback: 'style-loader',
           use: 'css-loader'
         }),
-      }
+      }, {
+        test: /\.gif$/,
+        loader: 'url-loader'
+      }, {
+        test: /\.(ttf|eot|svg)$/,
+        loader: 'file-loader'
+      },
     ]
   }, plugins: [
     new ExtractTextPlugin({

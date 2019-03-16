@@ -5,6 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import * as action from '../../store/action';
 
+const mapStateToProps = (state) => {
+  const { userId } = state;
+  return {
+    userId,
+  };
+}
+
 const mapDispatchToProps = (dispatch) => ({
   setUserID: (userId = null) => dispatch(action.setUserID(userId)),
 });
@@ -33,11 +40,14 @@ class Logon extends Component {
   onSumbitLogon = (event) => {
     event.preventDefault();
     const { userId } = this.state;
+    const { history } = this.props;
     
     // userid 자리수 체크
     if (userId.trim().length > 0) {
       const { setUserID } = this.props;
       setUserID(userId);
+
+      history.replace(`/chat/${userId}`);
     }
   }
 
@@ -62,11 +72,13 @@ class Logon extends Component {
 }
 
 Logon.propTypes = {
+  userId: PropTypes.string,
   setUserID: PropTypes.func,
 };
 
 Logon.defaultProps = {
+  userId: null,
   setUserID: () => {},
 };
 
-export default connect(null, mapDispatchToProps)(Logon);
+export default connect(mapStateToProps, mapDispatchToProps)(Logon);

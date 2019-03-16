@@ -34,7 +34,7 @@ public class SocketController {
   /**
    * index.jsp 호출
    */
-  @GetMapping("/index")
+  @GetMapping(value={"/index", "/chat/**"})
   public String index(Model model) {
     return "index";
   }

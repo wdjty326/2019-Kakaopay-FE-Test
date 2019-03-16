@@ -156,3 +156,21 @@
   max-width: 120px;
   max-height: 120px;
 }
+
+.App-fade-exit {
+  opacity: 1;
+  transition: .5s opacity ease;
+}
+
+.App-exit-active {
+  opacity: 0;
+}
+
+.App-enter-active {
+  opacity: 0;
+  transition: .5s opacity ease;
+}
+
+.App-enter-done {
+  opacity: 1;
+}

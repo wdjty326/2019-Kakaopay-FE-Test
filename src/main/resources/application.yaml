@@ -37,7 +37,7 @@ chatroom:
         id: angular
         name: 앵귤러
     - item:
-        icon: nodejs
+        icon: node-js
         id: nodejs
         name: NodeJs
     - item:

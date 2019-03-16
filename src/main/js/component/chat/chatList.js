@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as action from '../../store/action';
 
 const mapStateToProps = (state) => {
-  const { chatroomId, chatroomList } = state;
+  const { userId, chatroomId, chatroomList } = state;
   return {
+    userId,
     chatroomId,
     chatroomList,
   };
@@ -32,8 +33,10 @@ class ChatList extends Component {
   }
 
   onSelectedChatRoom = (chatroomId) => {
-    const { setChatroomID } = this.props;
+    const { userId, setChatroomID, history } = this.props;
     setChatroomID(chatroomId);
+
+    history.replace(`/chat/${userId}/${chatroomId}`);
   }
 
   onMouseEventChatRoom = (chatroomId = '') => {
@@ -57,7 +60,7 @@ class ChatList extends Component {
                 onMouseOver={() => this.onMouseEventChatRoom(chatroom['item.id'])}
                 onMouseOut={() => this.onMouseEventChatRoom()}
               >
-                <FontAwesomeIcon icon={chatroom['item.icon']} />
+                <FontAwesomeIcon icon={['fab', chatroom['item.icon']]} />{' '}
                 {chatroom['item.name']}
               </li>
             ))
@@ -69,6 +72,7 @@ class ChatList extends Component {
 }
 
 ChatList.propTypes = {
+  userId: PropTypes.string,
   chatroomId: PropTypes.string,
   chatroomList: PropTypes.instanceOf(Array),
   setChatroomID: PropTypes.func,
@@ -76,6 +80,7 @@ ChatList.propTypes = {
 };
 
 ChatList.defaultProps = {
+  userId: '',
   chatroomId: '',
   chatroomList: [],
   setChatroomID: () => {},
