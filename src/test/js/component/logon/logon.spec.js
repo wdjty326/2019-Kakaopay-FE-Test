@@ -20,23 +20,25 @@ describe('Logon 컴포넌트', () => {
     };
     
     store = mockStore(initialState);
-    const props = {
-      userId: '',
-      setUserID: (userId = null) => store.dispatch(action.setUserID(userId)),
-    };
-    
-    wrapper = mount(<Provider store={store}><Logon {...props} /></Provider>);
-  });
+    wrapper = shallow(
+      <Provider store={store}><Logon /></Provider>
+    );
+    // console.log(wrapper.prop('children'));
+  }); 
   
   it('Logon 래퍼를 그립니다.', () => {
-    expect(wrapper.find('.logon')).to.have.length(1);
+    expect(wrapper.find(Logon).length).to.equal(1);
+    console.log(wrapper.find(Logon).props());
+    // const container = wrapper.find(Logon);
+    // console.log(container);
+    // expect(container.find('.logon')).to.have.length(1);
   });
 
   it('Logon 컴포넌트에서 UserID를 입력합니다.', () => {
-    wrapper.find('input[name="userId"]').simulate(
-      'change', 
-      { target: { id: 'userId', value: 'test' } }
-    );
+    // wrapper.find('input[name="userId"]').simulate(
+    //   'change', 
+    //   { target: { id: 'userId', value: 'test' } }
+    // );
     // console.log(wrapper.find('input[name="userId"]').getElement());
     // console.log(wrapper.state());
     // expect(wrapper.state('userId')).to.equal('test');

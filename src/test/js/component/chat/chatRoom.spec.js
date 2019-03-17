@@ -17,7 +17,7 @@ describe('ChatRoom 컴포넌트', () => {
     }; 
     store = mockStore(initialState);
     // 웹소켓 연결로 테스트가 종료되지 않은 현상
-    // wrapper = mount(<Provider store={store}><ChatRoom /></Provider>);
+    wrapper = shallow(<Provider store={store}><ChatRoom /></Provider>);
   });
   
   it('ChatRoom 래퍼를 그립니다.', () => {

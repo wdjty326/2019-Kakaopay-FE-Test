@@ -17,7 +17,7 @@ describe('ChatList 컴포넌트', () => {
       chatroomList: [],
     };
     store = mockStore(initialState);
-    wrapper = mount(<Provider store={store}><ChatList /></Provider>);
+    wrapper = shallow(<Provider store={store}><ChatList /></Provider>);
   });
 
   it('ChatList 래퍼를 그립니다.', () => {
