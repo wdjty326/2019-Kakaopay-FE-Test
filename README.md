@@ -31,6 +31,8 @@
 ### 프론트 개발
 - ReactJS
 - Bootstrap 4
+- React-Router-Dom
+- Redux
 
 ### 백엔드 개발
 - java
@@ -63,6 +65,7 @@ or
 npm run build
 
 # webpack 으로 ui 테스트 코드 실행
+# ui 테스트 시 spring-boot 사전 실행 필요
 npm run test:unit
 
 # spring-boot 테스트 코드 실행
@@ -78,7 +81,7 @@ npm run start
 
 ### API 정의
 | API | 정의 | 파라미터 | 응답타입 | 응답값 | 기타
-|---|---|---|---|---|---|
+|---|-----|----|----|----|---|
 | GET<br>/api/chatroom | 채팅 리스트를 가져옵니다. | N/A | JSON | [{'item.id': 'test',<br> 'item.name': 'test}] | 
 | POST<br>/api/uploadFile | 파일을 업로드 합니다. | file={file} | multipert/form-data | {'fileName': 'test',<br> 'fileDownloadUri': 'http://locahost:3000/image/test.jpg',<br>,'size': 123123<br>, 'fileType': 'image/png'} | 
 | GET<br>/app/connect/{chatroomId} | 선택한 채팅방에 접속합니다. | id={String}<br>chatroomId={String} | JSON String | {'id': 'test',<br>'type': 'connect', <br>'message': null,<br>'fileSource': null} | WebSocket API
@@ -94,13 +97,25 @@ npm run start
 - 메세지 전송 API로 채팅처리
 
 #### 작업 리스트 정리
-- [x] 초기 README.md 작성
-- [x] 개발 환경 구축 및 프로젝트 구조 설계
-- [x] 개발 및 테스트
- - [x] 웹소켓 백엔드 개발
- - [x] 백엔드 테스트 코드 작성 및 단위 테스트 실행 
- - [x] 화면 기능 개발
- - [x] 화면 UI 작성
- - [x] 화면 테스트 코드 작성 및 단위 테스트 실행
-- [ ] 전체 기능 리스트 점검
-- [ ] README.md 추가 수정
+- [x] README.md 초안 작성
+- [x] 개발 환경 구축 (Spring-boot, React, Webpack4)
+- [x] 프로젝트 구조 설계
+- [x] 초기 API 리스트 정리
+  - [x] 기본 REST API 기능 개발
+  - [x] 웹소켓 메세지 브로커(stomp) 적용
+  - [x] 웹소켓 API 개발
+  - [x] REST API 및 소켓 테스트 코드 작성 및 실행
+  - [x] Redux 환경 구성
+  - [x] 화면 설계 및 기본 기능 개발
+  - [x] React 로 화면 개발
+  - [x] React 화면 UI 작성
+  - [x] mocha 로 화면 테스트 코드 샘플링 작성 및 실행
+  - [ ] 화면 테스트 코드 작성 및 실행
+- [x] 전체 기능 리스트 점검
+- [x] README.md 추가 수정
+
+
+### 해결하지 못한 이슈
+- Redux 비동기 액션에 대한 테스트 코드 작성 처리
+- 컴포넌트 안에 있는 redux 액션에 대한 테스트 코드 작성 처리
+- 컴포넌트 안에 있는 소켓 연결 처리에 대한 테스트 코드 작성 처리

@@ -60,7 +60,7 @@ class Logon extends Component {
         </div>
         <form onSubmit={this.onSumbitLogon}>
           <div className='form-group'>
-            <input className='form-control' placeholder='사용자ID' type='text' onChange={this.onChangeUserId} value={userId} />
+            <input name='userId' className='form-control' placeholder='사용자ID' type='text' onChange={this.onChangeUserId} value={userId} />
           </div>
           <div className='form-group'>
             <button className='btn btn-block btn-third btn-lg' type='submit'>로그인</button>

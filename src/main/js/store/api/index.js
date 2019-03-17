@@ -1,21 +1,24 @@
 import axios from 'axios';
 
+// 서버 URL
+const url = 'http://localhost:3000';
+
 /**
  * 채팅방 리스트 정보 조회
  */
-export const getChatroomList = (callback = () => {}) => {
-  return axios.get('/api/chatroom').then(response => {
+export const getChatroomList = async (callback = () => {}) => {
+  return await axios.get(`${url}/api/chatroom`).then(response => {
     callback(response.data);
   }).catch((error) => {
     console.log(error);
   });
 };
 
-export const uploadImageFile = (file, callback = () => {}) => {
+export const uploadImageFile = async (file, callback = () => {}) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  return axios.post('/api/uploadFile', formData, {
+  return await axios.post(`${url}/api/uploadFile`, formData, {
     headers : {
       'Content-Type': 'multipart/form-data',
     }

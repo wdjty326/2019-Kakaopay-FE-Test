@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { faReact, faEmber, faAngular, faVuejs, faNodeJs} from '@fortawesome/free-brands-svg-icons';
 import { BrowserRouter as Router } from "react-router-dom";
 

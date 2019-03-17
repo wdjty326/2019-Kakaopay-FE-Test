@@ -22,7 +22,7 @@ class ChatRoom extends Component {
     super(props);
 
     // sockjs 객체
-    const sockJS = new SockJS('/sockjs');
+    const sockJS = new SockJS('http://localhost:3000/sockjs');
     const stomp = Stomp.over(sockJS);
     
     this.state = {
@@ -91,6 +91,11 @@ class ChatRoom extends Component {
     cacheListElement.scrollTop = cacheListElement.scrollHeight;
   }
 
+  componentWillUnmount() {
+    const { stomp } = this.state;
+    stomp.disconnect();
+  }
+
   updateCache = (cache) => {
     const { cacheList } = this.state;
     const updateCacheList = cacheList.map((i) => i);
@@ -119,11 +124,7 @@ class ChatRoom extends Component {
       fileSource: target.files[0],
     });
   }
-  
-  componentWillUnmount() {
-    const { stomp } = this.state;
-    stomp.disconnect();
-  }
+
   /**
    * 
    */
