@@ -52,6 +52,14 @@ Visual Studio Code Link : https://code.visualstudio.com/Download
 
 # Preferences >> Setting 에서 설정검색에 jdk 검색 후, setting.json 파일에 java.home 추가
 "java.home": "/Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home" # mac
+
+# Exception in thread "main" javax.net.ssl.SSLException: Received fatal alert: protocol_version 에러 발생 시 대처
+window의 경우 mvnw.cmd 수정
+set JAVA_HOME=${openjdk11 경로} 
+ex ) set JAVA_HOME=C:/Program Files/Java/jdk-11.0.2
+linux 혹은 max의 경우 mvnw 수정
+JAVA_HOME=${openjdk11 경로} 
+ex ) JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home
 ```
 
 ### 프로젝트 빌드 & 테스트 & 실행
