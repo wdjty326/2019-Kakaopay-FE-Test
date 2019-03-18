@@ -34,7 +34,7 @@
 #   MAVEN_SKIP_RC - flag to disable loading of mavenrc files
 # ----------------------------------------------------------------------------
 JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.2.jdk/Contents/Home
-
+echo "$JAVA_HOME"
 if [ -z "$MAVEN_SKIP_RC" ] ; then
 
   if [ -f /etc/mavenrc ] ; then

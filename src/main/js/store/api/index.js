@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 서버 URL
-const url = 'http://localhost:3000';
+const url = '';
 
 /**
  * 채팅방 리스트 정보 조회

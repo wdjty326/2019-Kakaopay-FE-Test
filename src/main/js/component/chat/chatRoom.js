@@ -22,7 +22,7 @@ class ChatRoom extends Component {
     super(props);
 
     // sockjs 객체
-    const sockJS = new SockJS('http://localhost:3000/sockjs');
+    const sockJS = new SockJS('/sockjs');
     const stomp = Stomp.over(sockJS);
     
     this.state = {
@@ -98,15 +98,25 @@ class ChatRoom extends Component {
 
   updateCache = (cache) => {
     const { cacheList } = this.state;
+    const {
+      userId
+    } = this.props;
     const updateCacheList = cacheList.map((i) => i);
 
     updateCacheList.push(cache);
-    this.setState({
-      cacheList: updateCacheList,
-      message: '',
-      fileSource: null,
-    });
-
+    
+    if (cache.id === userId) {
+      this.setState({
+        cacheList: updateCacheList,
+        message: '',
+        fileSource: null,
+      });  
+    } else {
+      this.setState({
+        cacheList: updateCacheList,
+      });
+    }
+    
     const fileSourceRef = this.fileSourceRef.current;
     fileSourceRef.value = null;
   }
